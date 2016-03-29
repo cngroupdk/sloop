@@ -1,0 +1,33 @@
+body {
+    background-color: #ebebeb;
+    overflow: hidden;
+}
+
+#content {
+    text-align: center;
+    width: 60%;
+    margin: 0 auto;
+}
+
+.from {
+    margin-bottom: 10px;
+}
+
+.status {
+    position: relative;
+    background-color: white;
+    outline: 1px solid transparent;
+    box-shadow: 2px 2px 1px #888888
+}
+
+.statusPicture {
+    max-height: 50%;
+}
+
+.status.deactivated {
+    display: none;
+}
+
+.status.active {
+    display: block;
+}
