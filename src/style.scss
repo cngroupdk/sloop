@@ -1,0 +1,25 @@
+body {
+  background-color: #ebebeb;
+  overflow: hidden;
+}
+
+#content {
+  text-align: center;
+  width: 60%;
+  margin: 0 auto;
+}
+
+.status {
+  position: absolute;
+  outline: 1px solid transparent;
+}
+
+.status.deactivated {
+  opacity: 0;
+  transition: all 1s ease-out;
+}
+
+.status.active {
+  opacity: 1;
+  transition: all 2s ease-in;
+}

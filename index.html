@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link href="css.css" rel="stylesheet" type="text/css">
+    <link href="builds/bundle.css" rel="stylesheet" type="text/css">
     <title>Sloop</title>
 </head>
 <body>
@@ -17,15 +17,9 @@
     }(document, 'script', 'facebook-jssdk'));
 </script>
 
-<fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-</fb:login-button>
-<button onclick="stopInterval()">X</button>
-
-
 <div id="content"></div>
 
-<script src="js/main.js"></script>
-<script src="js/facebook.js"></script>
+<script src="builds/bundle.js"></script>
 </body>
 </html>
 
