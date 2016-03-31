@@ -9,8 +9,9 @@ window.fbAsyncInit = function() {
   });
   checkLoginState();
 };
-var refreshIntervalTime = 360 * 1000;
-var slideIntervalTime = 15 * 1000;
+
+var refreshIntervalTime = 30 * 1000;
+var slideIntervalTime = 5 * 1000;
 var sources = {
   facebook: [
     'cngroupzl', 'cngroupcz', 'cnuniversity'
@@ -40,64 +41,72 @@ function checkLoginState() {
 
 function prepareFeeds() {
   var newCollection = [];
-  for (var i = 0; i < sources.facebook.length; i++) {
-    (function() {
-      new Facebook(sources.facebook[i]).getFeed().then(function(response) {
-        newCollection = newCollection.concat(response);
+  var i = 1;
+  sources.facebook.forEach(function(source) {
+    new Facebook(source).getFeed().then(function(response) {
+      newCollection = newCollection.concat(response);
+
+      if (i === sources.facebook.length) {
         newCollection.sort(function(a, b) {
           return new Date(b.date) - new Date(a.date);
         });
-
-        if (i === sources.facebook.length) {
-          if (newCollection !== collection) {
-            collection = newCollection;
-            createElements();
-            startInterval();
-          }
+        if (newCollection !== collection) {
+          collection = newCollection;
+          startInterval();
         }
-      })
-    })()
-  }
+      }
+      i++;
+    });
+  })
 }
 
-function createElements() {
+function createElements(id) {
   var container = document.getElementById('content');
-  var id = 0;
 
-  collection.forEach(function(status) {
-    var element;
-    if (document.getElementById(id)) {
-      element = document.getElementById(id);
-      element.innerHTML = '';
-    } else {
-      element = document.createElement('div');
+  var element;
+  if (document.getElementById(id)) {
+    element = document.getElementById(id);
+    if (element.firstChild.getAttribute('data-href') === collection[id]['permalink']) {
+      return;
     }
+    element.innerHTML = '';
+  } else {
+    element = document.createElement('div');
     element.className = 'status deactivated';
-    element.id = id++;
+  }
+  element.id = id;
 
-    var post = document.createElement('div');
-    post.className = 'fb-post';
-    post.setAttribute('data-href', status['permalink']);
-    post.setAttribute('data-width', 750);
-    element.appendChild(post);
+  var post = document.createElement('div');
+  post.className = 'fb-post';
+  post.setAttribute('data-href', collection[id]['permalink']);
+  post.setAttribute('data-width', 750);
+  element.appendChild(post);
 
-    container.appendChild(element);
-    FB.XFBML.parse();
-  });
+  container.appendChild(element);
+  FB.XFBML.parse(element);
 }
 
 function slideShow() {
   if (collection.length > 0) {
     document.getElementById(activeID).className = 'status deactivated';
-    if (activeID++ === collection.length - 1) {
+    activeID++;
+    if (activeID >= collection.length - 1) {
       activeID = 0;
     }
     document.getElementById(activeID).className = 'status active';
+    if (activeID + 1 < collection.length - 1) {
+      createElements(activeID + 1);
+    } else {
+      createElements(0);
+    }
   }
 }
 
 function startInterval() {
   if (!slideInterval) {
+    collection.forEach(function(feedID, index) {
+      createElements(index);
+    });
     slideInterval = setInterval(slideShow, slideIntervalTime);
     refreshInterval = setInterval(function() {
       prepareFeeds();
