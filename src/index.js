@@ -1,4 +1,6 @@
 import Facebook from './components/facebook.js';
+import './style.scss';
+
 document.body.onload = checkLoginState;
 window.fbAsyncInit = function() {
   FB.init({
