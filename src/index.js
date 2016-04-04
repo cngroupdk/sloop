@@ -1,4 +1,5 @@
 import Facebook from './components/facebook.js';
+import Twitter from './components/twitter.js';
 import * as config from './components/configuration.js';
 import './style.scss';
 
@@ -18,6 +19,8 @@ var feeds = [];
 var activeID = 0;
 var slideInterval;
 var refreshInterval;
+var facebookFeedReady = false;
+var twitterFeedReady = false;
 
 function checkLoginState() {
   FB.getLoginStatus(function(response) {
@@ -41,43 +44,74 @@ function prepareFeeds() {
       newCollection = newCollection.concat(response);
 
       if (i === config.sources.facebook.length) {
-        newCollection.sort(function(a, b) {
-          return new Date(b.date) - new Date(a.date);
-        });
         if (newCollection !== collection) {
           collection = newCollection;
+          facebookFeedReady = true;
           startInterval();
         }
       }
       i++;
     });
+  });
+  config.sources.twitter.forEach(function(source) {
+    new Twitter(source).getFeed().then(function(response) {
+      newCollection = newCollection.concat(response);
+      collection = newCollection;
+      twitterFeedReady = true;
+      startInterval();
+    })
   })
 }
 
 function createElements(id) {
   var container = document.getElementById('content');
-
   var element;
-  if (document.getElementById(id)) {
-    element = document.getElementById(id);
-    if (element.firstChild.getAttribute('data-href') === collection[id]['permalink']) {
-      return;
+  var post;
+
+  if (collection[id]['type'] === 'facebook') {
+    if (document.getElementById(id)) {
+      element = document.getElementById(id);
+      if (element.firstChild.getAttribute('data-href') === collection[id]['permalink']) {
+        return;
+      }
+      element.innerHTML = '';
+    } else {
+      element = document.createElement('div');
+      element.className = 'status deactivated';
     }
-    element.innerHTML = '';
+    element.id = id;
+
+    post = document.createElement('div');
+    post.className = 'fb-post';
+    post.setAttribute('data-href', collection[id]['permalink']);
+    post.setAttribute('data-width', 750);
+    element.appendChild(post);
+    container.appendChild(element);
+
+    FB.XFBML.parse(element);
   } else {
-    element = document.createElement('div');
-    element.className = 'status deactivated';
+    if (document.getElementById(id)) {
+      element = document.getElementById(id);
+      if (element.firstChild.getAttribute('tweet-id') === collection[id]['id']) {
+        return;
+      }
+      element.innerHTML = '';
+    } else {
+      element = document.createElement('div');
+      element.className = 'status deactivated';
+    }
+    element.id = id;
+
+    post = document.createElement('div');
+    post.className = 'tweet';
+    post.setAttribute('tweet-id', collection[id]['id']);
+    element.appendChild(post);
+    container.appendChild(element);
+    twttr.widgets.createTweet(collection[id]['id'], post, {
+      align: 'center',
+      width: '550'
+    });
   }
-  element.id = id;
-
-  var post = document.createElement('div');
-  post.className = 'fb-post';
-  post.setAttribute('data-href', collection[id]['permalink']);
-  post.setAttribute('data-width', 750);
-  element.appendChild(post);
-
-  container.appendChild(element);
-  FB.XFBML.parse(element);
 }
 
 function slideShow() {
@@ -97,10 +131,14 @@ function slideShow() {
 }
 
 function startInterval() {
-  if (!slideInterval) {
+  if (!slideInterval && facebookFeedReady && twitterFeedReady) {
+    collection.sort(function(a, b) {
+      return b.date - a.date;
+    });
     collection.forEach(function(feedID, index) {
       createElements(index);
     });
+    document.getElementById(0).className = 'status active';
     slideInterval = setInterval(slideShow, config.slideIntervalTime);
     refreshInterval = setInterval(function() {
       prepareFeeds();

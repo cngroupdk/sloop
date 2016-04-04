@@ -6,7 +6,7 @@ var plugins = [
 
 module.exports = {
   devtools: 'sourcemap',
-  entry:  ['webpack/hot/dev-server', './src'],
+  entry:  ['./src'],
   output: {
     path: 'builds',
     filename: 'bundle.js',
@@ -21,7 +21,7 @@ module.exports = {
       {
         test:   /\.js/,
         loader: 'babel',
-        excluse: /node_modules/,
+        excluse: /builds|node_modules|server/,
         include: __dirname + '/src',
         query: {
           presets: ['es2015']
