@@ -1,25 +1,17 @@
 import Facebook from './components/facebook.js';
+import * as config from './components/configuration.js';
 import './style.scss';
 
 document.body.onload = checkLoginState;
 window.fbAsyncInit = function() {
   FB.init({
-    appId: '215566298800379',
+    appId: config.facebookAppID,
     cookie: true,
     xfbml: true,
     version: 'v2.5'
   });
   checkLoginState();
 };
-
-var refreshIntervalTime = 30 * 1000;
-var slideIntervalTime = 5 * 1000;
-var sources = {
-  facebook: [
-    'cngroupzl', 'cngroupcz', 'cnuniversity'
-  ]
-};
-
 
 var collection = [];
 var feeds = [];
@@ -32,10 +24,10 @@ function checkLoginState() {
     if (response.status === 'connected') {
       prepareFeeds();
     } else if (response.status === 'not_authorized') {
-      document.getElementById('content').innerHTML = 'Please log into this app. <fb:login-button scope="public_profile,email" onlogin="location.reload();"> </fb:login-button>';
+      document.getElementById('content').innerHTML = '<div class="status"><p>Please log into this app.</p><fb:login-button scope="public_profile,email" onlogin="location.reload();"> </fb:login-button></div>';
       FB.XFBML.parse();
     } else {
-      document.getElementById('content').innerHTML = 'Please log into Facebook. <fb:login-button scope="public_profile,email" onlogin="location.reload();"> </fb:login-button>';
+      document.getElementById('content').innerHTML = '<div class="status"><p>Please log into Facebook. </p><fb:login-button scope="public_profile,email" onlogin="location.reload();"> </fb:login-button></div>';
       FB.XFBML.parse();
     }
   });
@@ -44,11 +36,11 @@ function checkLoginState() {
 function prepareFeeds() {
   var newCollection = [];
   var i = 1;
-  sources.facebook.forEach(function(source) {
+  config.sources.facebook.forEach(function(source) {
     new Facebook(source).getFeed().then(function(response) {
       newCollection = newCollection.concat(response);
 
-      if (i === sources.facebook.length) {
+      if (i === config.sources.facebook.length) {
         newCollection.sort(function(a, b) {
           return new Date(b.date) - new Date(a.date);
         });
@@ -109,10 +101,10 @@ function startInterval() {
     collection.forEach(function(feedID, index) {
       createElements(index);
     });
-    slideInterval = setInterval(slideShow, slideIntervalTime);
+    slideInterval = setInterval(slideShow, config.slideIntervalTime);
     refreshInterval = setInterval(function() {
       prepareFeeds();
-    }, refreshIntervalTime);
+    }, config.refreshIntervalTime);
   }
 }
 
