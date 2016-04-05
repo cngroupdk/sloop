@@ -1,4 +1,4 @@
-export const facebookAppID = '215566298800379';
+export const facebookAppID = '1589187544692382';
 export const facebookLimit = 5;
 export const twitterLimit = 10;
 export const refreshIntervalTime = 360 * 1000;

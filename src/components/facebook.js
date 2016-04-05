@@ -1,4 +1,5 @@
 import {facebookLimit} from './configuration.js';
+
 export default class Facebook {
 
   constructor(source) {
