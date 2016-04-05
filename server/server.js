@@ -9,10 +9,10 @@ var server = app.listen(process.env.PORT || 9999, function() {
 });
 
 var client = new Twitter({
-  consumer_key: 'P7k3Ub3WJYphvTaJljjbenZNc',
-  consumer_secret: 'SFi1hBdtbwc9vbkixYgBkNf9orU2eK5nlg1sKrtDmK94KkBEoK',
-  access_token_key: '712286831853883392-7EyKVvPukWEN83AfxNQG8230PFtfDMf',
-  access_token_secret: 'tMpEKISuzXUJeSwCVASDC7oGfQ09zMCcmL2RHXTCsrHLy'
+  consumer_key: 'DhByDg9KCOv6bWCgvkbdIsDRl',
+  consumer_secret: 'ahKEkoGs8iIDBegOnL9sBQ2V8VUO4rpuNCi0hi28IdUXu4hZ08',
+  access_token_key: '3427671862-olDxVZSTXHEhzkYjJozoSlvnm1L0GjtIEweDWkb',
+  access_token_secret: 'KCcLc9Q4QEwU8C9DrWRKUNTdNemEjkBu8bu52CCBQVa1R'
 });
 
 app.get('/twitter/timeline', function(req, res) {
