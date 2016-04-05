@@ -1,11 +1,17 @@
 body {
-  background: url(CN_Group_prima.svg);
+  background: url(background.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
   background-size: cover;
   overflow: hidden;
-  background-position-y: 10%;
 }
 
-#content {
+.logo {
+  position: absolute;
+  top: 0;
+  left: 1%;
+  width: 20%;
 }
 
 .status {

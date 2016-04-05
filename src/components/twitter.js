@@ -20,7 +20,8 @@ export default class Twitter {
             var parsedArray = JSON.parse("[" + httpRequest.responseText + "]")[0];
             resolve(parsedArray);
           } else {
-            reject();
+            console.warn('Twitter server error.');
+            resolve();
           }
         }
       };

@@ -39,28 +39,36 @@ function checkLoginState() {
 function prepareFeeds() {
   var newCollection = [];
   var i = 1;
-  config.sources.facebook.forEach(function(source) {
-    new Facebook(source).getFeed().then(function(response) {
-      newCollection = newCollection.concat(response);
+  if (config.sources.facebook.length > 0) {
+    config.sources.facebook.forEach(function(source) {
+      new Facebook(source).getFeed().then(function(response) {
+        newCollection = newCollection.concat(response);
 
-      if (i === config.sources.facebook.length) {
-        if (newCollection !== collection) {
+        if (i === config.sources.facebook.length) {
           collection = newCollection;
           facebookFeedReady = true;
           startInterval();
         }
-      }
-      i++;
+        i++;
+      });
     });
-  });
-  config.sources.twitter.forEach(function(source) {
-    new Twitter(source).getFeed().then(function(response) {
-      newCollection = newCollection.concat(response);
-      collection = newCollection;
-      twitterFeedReady = true;
-      startInterval();
+  } else {
+    facebookFeedReady = true;
+  }
+  if (config.sources.twitter.length > 0) {
+    config.sources.twitter.forEach(function(source) {
+      new Twitter(source).getFeed().then(function(response) {
+        if (response) {
+          newCollection = newCollection.concat(response);
+          collection = newCollection;
+        }
+        twitterFeedReady = true;
+        startInterval();
+      })
     })
-  })
+  } else {
+    twitterFeedReady = true;
+  }
 }
 
 function createElements(id) {
@@ -112,6 +120,10 @@ function createElements(id) {
       width: '550'
     });
   }
+}
+
+function test() {
+
 }
 
 function slideShow() {

@@ -36,8 +36,8 @@ module.exports = {
         loader: 'html'
       },
       {
-        test: /\.svg/,
-        loader: 'svg-url-loader'
+        test: /\.(jpe?g|png|gif|svg)$/i,
+        loader: 'url-loader'
       }
     ]
   }
