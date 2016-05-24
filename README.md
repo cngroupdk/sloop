@@ -21,3 +21,9 @@ server {
         proxy_pass http://localhost:9999/twitter/timeline;
     }
 }
+
+TODO:
+- in-screen settings
+- improve size of posts (custom css)
+- add source of feeds to the screen
+- more types of presentation
